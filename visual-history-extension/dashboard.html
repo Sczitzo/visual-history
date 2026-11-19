@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="x-dns-prefetch-control" content="off">
+  <title>Visual History</title>
+  <link rel="icon" href="icons/history-32.png">
+  <link rel="stylesheet" href="dashboard.css">
+  <script type="module" src="dashboard.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner wrap">
+      <div class="brand">
+        <img src="icons/history-48.png" alt="" width="36" height="36">
+        <h1>Visual History</h1>
+      </div>
+      <div class="top-actions">
+        <span id="preview-state" class="state-label" hidden></span>
+        <button id="enable" type="button" class="primary" disabled>Enable automatic previews</button>
+        <button id="settings" type="button">Settings</button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <p id="notice" class="notice" role="status"></p>
+    <section aria-labelledby="day-title" class="overview">
+      <div class="day-head">
+        <div>
+          <p id="day-context" class="day-context">Today</p>
+          <h2 id="day-title">Browsing activity</h2>
+        </div>
+        <div class="date-controls" role="group" aria-label="Choose a date">
+          <button id="previous-day" type="button" class="icon-button" aria-label="Previous day" title="Previous day">‹</button>
+          <label class="sr-only" for="date">History date</label>
+          <input id="date" type="date">
+          <button id="next-day" type="button" class="icon-button" aria-label="Next day" title="Next day">›</button>
+        </div>
+      </div>
+      <section class="timeline" aria-labelledby="timeline-title">
+        <div class="timeline-head">
+          <h3 id="timeline-title">Browsing activity</h3>
+          <p class="timeline-hint">Drag to choose a time range. Each bar shows 15 minutes.</p>
+        </div>
+        <div id="timeline-plot" class="timeline-plot" aria-hidden="true">
+          <div id="timeline-range" class="timeline-range" hidden></div>
+          <div id="timeline-bars" class="timeline-bars"></div>
+        </div>
+        <div class="time-axis" aria-hidden="true">
+          <span>12 AM</span><span>6 AM</span><span>Noon</span><span>6 PM</span><span>12 AM</span>
+        </div>
+        <div class="range-controls">
+          <label>From <select id="range-start" disabled></select></label>
+          <label>To <select id="range-end" disabled></select></label>
+          <button id="full-day" type="button" disabled>Full day</button>
+          <span id="day-total"></span>
+        </div>
+      </section>
+    </section>
+
+    <section class="browser" aria-label="Browse history">
+      <div class="controls">
+        <div class="views" role="group" aria-label="History view">
+          <button id="clusters" type="button" aria-pressed="true">Clusters</button>
+          <button id="grid" type="button" aria-pressed="false">Visual Grid</button>
+        </div>
+        <div class="filters">
+          <label class="search">
+            <span class="sr-only">Search titles, URLs, and categories</span>
+            <input id="search" type="search" placeholder="Search history" autocomplete="off">
+          </label>
+          <label class="category-filter">
+            <span class="sr-only">Filter by category</span>
+            <select id="category"><option value="">All categories</option></select>
+          </label>
+          <button id="starred" type="button" aria-pressed="false"><span aria-hidden="true">☆</span> Starred</button>
+        </div>
+      </div>
+      <div class="results-head">
+        <h2 id="results-title">Browsing groups</h2>
+        <p id="result-count" role="status"></p>
+      </div>
+      <aside id="category-key" class="category-key" aria-label="Category colors" hidden>
+        <ul id="category-legend" class="category-legend"></ul>
+      </aside>
+      <p id="partial" class="partial" hidden></p>
+      <div id="results" aria-busy="true"></div>
+      <button id="more" type="button" hidden>Show more</button>
+    </section>
+  </main>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <div class="dialog-head">
+      <h2 id="settings-title">Settings</h2>
+      <button id="close-settings" type="button">Close</button>
+    </div>
+    <p id="settings-notice" class="notice" role="status"></p>
+    <section aria-labelledby="previews-title" class="settings-section">
+      <h3 id="previews-title">Automatic previews</h3>
+      <p>Brave asks for access to all websites to capture the page you’re viewing. Previews are saved on this device. Visual History skips common sensitive sites and routes, but can’t reliably identify every page displaying private information.</p>
+      <div class="settings-actions">
+        <button id="capture-setting" type="button" class="primary">Enable automatic previews</button>
+        <button id="clear-previews" type="button">Clear thumbnails</button>
+      </div>
+      <p id="cache-usage" class="muted"></p>
+    </section>
+    <form id="rules-form" class="settings-section">
+      <h3><label for="exclusions">Excluded sites</label></h3>
+      <p id="exclusion-help">Use one site name per line. A name includes its subdomains. Add a port for a specific local site, such as localhost:3000. Excluded sites keep their history entries and use generated tiles.</p>
+      <textarea id="exclusions" rows="3" maxlength="3000" aria-describedby="exclusion-help" spellcheck="false" placeholder="example.com"></textarea>
+      <h3 id="rules-title">Category rules</h3>
+      <p id="rules-help">Use the same site name format. The most specific match wins. Visits without a match go under Other.</p>
+      <table aria-labelledby="rules-title" aria-describedby="rules-help">
+        <thead><tr><th scope="col">Category</th><th scope="col">Site names</th></tr></thead>
+        <tbody id="rule-table"></tbody>
+      </table>
+      <p id="rules-notice" class="notice" role="status"></p>
+      <button id="save-rules" type="submit" class="primary">Save settings</button>
+    </form>
+  </dialog>
+</body>
+</html>
